@@ -1,0 +1,779 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&family=Playfair+Display:wght@700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ni:#020408;--nv:#060C1A;--st:#0D1525;--md:#121E35;
+  --am:#F59E0B;--ab:#FCD34D;--ad:#92600A;
+  --wh:#F5F9FF;--mu:rgba(245,249,255,0.42);
+  --br:rgba(245,158,11,0.16);
+}
+#wrap{
+  width:100%;background:var(--ni);color:var(--wh);
+  font-family:'DM Sans',sans-serif;
+  overflow:hidden;position:relative;
+  min-height:600px;
+}
+#cur-ring{
+  position:absolute;width:40px;height:40px;
+  border:1.5px solid var(--am);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .22s,height .22s,opacity .2s;
+  mix-blend-mode:screen;
+}
+#cur-dot{
+  position:absolute;width:6px;height:6px;
+  background:var(--ab);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 10px var(--am);
+}
+#trail{position:absolute;inset:0;pointer-events:none;z-index:9998}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:500;
+  padding:14px 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(2,4,8,0.92);
+  border-bottom:1px solid var(--br);
+  backdrop-filter:blur(12px);
+}
+.logo{
+  font-family:'Bebas Neue',sans-serif;font-size:24px;
+  letter-spacing:3px;color:var(--am);
+  display:flex;align-items:center;gap:9px;
+}
+.logo-hex{
+  width:26px;height:26px;background:var(--am);
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  animation:spin 10s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{
+  color:var(--mu);font-size:11px;letter-spacing:1.5px;
+  text-decoration:none;text-transform:uppercase;font-weight:500;
+  transition:color .3s;
+}
+.nav-links a:hover{color:var(--am)}
+.nav-btn{
+  background:var(--am);color:#020408;
+  border:none;padding:8px 20px;font-size:11px;
+  letter-spacing:1.5px;text-transform:uppercase;
+  font-weight:500;font-family:'DM Sans',sans-serif;
+  border-radius:2px;cursor:pointer;
+  transition:background .3s,box-shadow .3s;
+}
+.nav-btn:hover{background:var(--ab);box-shadow:0 0 24px rgba(245,158,11,.4)}
+
+/* HERO */
+.hero{
+  height:88vh;min-height:500px;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.merge-bg{position:absolute;inset:0}
+.merge-l,.merge-r{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  transition:clip-path .06s ease;
+}
+.merge-l{
+  background-image:url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1400&q=75');
+  clip-path:polygon(0 0,50% 0,50% 100%,0 100%);
+  filter:saturate(.4) brightness(.32) sepia(.25);
+}
+.merge-r{
+  background-image:url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=1400&q=75');
+  clip-path:polygon(50% 0,100% 0,100% 100%,50% 100%);
+  filter:saturate(.6) brightness(.28) hue-rotate(200deg);
+}
+.merge-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(2,4,8,.7),rgba(6,12,26,.45),rgba(2,4,8,.72));
+}
+.merge-line{
+  position:absolute;top:0;bottom:0;width:2px;
+  background:var(--am);left:50%;transform:translateX(-50%);
+  box-shadow:0 0 18px var(--am),0 0 50px rgba(245,158,11,.35);
+  transition:left .06s ease;z-index:3;
+}
+.merge-line::before{
+  content:'';position:absolute;
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  width:14px;height:14px;border-radius:50%;
+  background:var(--am);box-shadow:0 0 20px var(--am);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(245,158,11,.03) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(245,158,11,.03) 1px,transparent 1px);
+  background-size:55px 55px;
+  animation:gdrift 28s linear infinite;
+}
+@keyframes gdrift{to{background-position:55px 55px}}
+.hero-c{
+  position:relative;z-index:10;text-align:center;
+  padding:0 20px;pointer-events:none;
+}
+.hero-eye{
+  font-size:10px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--am);margin-bottom:16px;font-weight:500;
+  opacity:0;animation:fup .8s .3s forwards;
+}
+.hero-h{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(56px,9vw,120px);
+  line-height:.92;letter-spacing:3px;
+  opacity:0;animation:fup .9s .5s forwards;
+}
+.hero-h span{color:var(--am);display:block}
+.hero-p{
+  font-size:clamp(13px,1.4vw,16px);
+  color:var(--mu);max-width:500px;margin:20px auto 0;
+  line-height:1.75;font-weight:300;
+  opacity:0;animation:fup .9s .7s forwards;
+}
+.hero-btns{
+  display:flex;gap:14px;justify-content:center;margin-top:36px;
+  pointer-events:all;
+  opacity:0;animation:fup .9s .9s forwards;
+}
+.btn-p{
+  background:var(--am);color:#020408;
+  padding:12px 32px;border:none;
+  font-size:12px;letter-spacing:2px;text-transform:uppercase;
+  font-weight:500;border-radius:2px;cursor:pointer;
+  transition:all .3s;font-family:'DM Sans',sans-serif;
+}
+.btn-p:hover{background:var(--ab);box-shadow:0 0 36px rgba(245,158,11,.45);transform:translateY(-2px)}
+.btn-o{
+  background:transparent;color:var(--wh);
+  padding:12px 32px;border:1px solid rgba(245,249,255,.22);
+  font-size:12px;letter-spacing:2px;text-transform:uppercase;
+  font-weight:300;border-radius:2px;cursor:pointer;
+  transition:all .3s;font-family:'DM Sans',sans-serif;
+}
+.btn-o:hover{border-color:var(--am);color:var(--am)}
+@keyframes fup{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.scroll-hint{
+  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--mu);display:flex;flex-direction:column;align-items:center;gap:8px;
+  z-index:10;opacity:0;animation:fup 1s 1.1s forwards;
+}
+.scroll-bar{
+  width:1px;height:44px;
+  background:linear-gradient(to bottom,var(--am),transparent);
+  animation:spulse 2s ease-in-out infinite;
+}
+@keyframes spulse{0%,100%{opacity:.4;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
+
+/* STATS */
+.stats{
+  background:var(--st);
+  border-top:1px solid var(--br);border-bottom:1px solid var(--br);
+  padding:36px 40px;
+  display:grid;grid-template-columns:repeat(4,1fr);
+}
+.stat{text-align:center;padding:16px;border-right:1px solid var(--br)}
+.stat:last-child{border-right:none}
+.stat-n{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:46px;color:var(--am);line-height:1;letter-spacing:2px;
+}
+.stat-s{color:var(--ab);font-size:24px}
+.stat-l{
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--mu);margin-top:6px;
+}
+
+/* SECTION */
+.sec{padding:90px 40px}
+.tag{
+  display:inline-block;font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--am);border:1px solid rgba(245,158,11,.32);
+  padding:5px 14px;border-radius:2px;margin-bottom:18px;
+}
+.sec-h{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(32px,4vw,52px);font-weight:700;
+  line-height:1.1;
+}
+.sec-h em{color:var(--am);font-style:normal}
+
+/* SHOWCASE */
+.showcase{
+  background:var(--nv);
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:500px;
+}
+.sc-imgs{position:relative;overflow:hidden;cursor:crosshair;min-height:400px}
+.sc-a,.sc-b{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  transition:clip-path .55s cubic-bezier(.4,0,.2,1);
+}
+.sc-a{
+  background-image:url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=70');
+  clip-path:polygon(0 0,100% 0,100% 100%,0 100%);
+  filter:brightness(.68) saturate(.75);
+}
+.sc-b{
+  background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=70');
+  clip-path:polygon(100% 0,100% 0,100% 100%,100% 100%);
+  filter:brightness(.7) saturate(1.1) hue-rotate(185deg);
+}
+.sc-imgs:hover .sc-b{clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+.sc-imgs:hover .sc-a{clip-path:polygon(0 0,0 0,0 100%,0 100%)}
+.sc-ov{position:absolute;inset:0;background:linear-gradient(to right,rgba(2,4,8,.3),transparent);z-index:1}
+.sc-lbl{
+  position:absolute;bottom:24px;left:24px;z-index:2;
+  font-family:'Bebas Neue',sans-serif;font-size:18px;
+  letter-spacing:3px;color:rgba(245,249,255,.5);transition:color .4s;
+}
+.sc-imgs:hover .sc-lbl{color:var(--am)}
+.sc-copy{
+  padding:60px 48px;display:flex;flex-direction:column;justify-content:center;
+  background:var(--nv);
+}
+.steps{display:flex;flex-direction:column;gap:24px;margin-top:36px}
+.step{display:flex;gap:18px;align-items:flex-start;opacity:0;transform:translateX(36px);transition:opacity .6s,transform .6s}
+.step.vis{opacity:1;transform:translateX(0)}
+.step-n{
+  font-family:'Bebas Neue',sans-serif;font-size:36px;
+  color:var(--am);opacity:.28;line-height:1;flex-shrink:0;width:40px;
+}
+.step-t h4{font-size:14px;font-weight:500;margin-bottom:5px}
+.step-t p{font-size:12px;color:var(--mu);line-height:1.65;font-weight:300}
+
+/* MODULES */
+.mods{background:var(--ni)}
+.mod-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;margin-top:60px;
+  border:1px solid var(--br);
+}
+.mod{
+  background:var(--st);padding:36px 28px;
+  position:relative;overflow:hidden;
+  opacity:0;transform:translateY(44px);
+  transition:opacity .65s,transform .65s,background .35s;
+  cursor:default;
+}
+.mod.vis{opacity:1;transform:translateY(0)}
+.mod::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(245,158,11,.05),transparent 70%);
+  opacity:0;transition:opacity .35s;
+}
+.mod:hover{background:var(--md)}
+.mod:hover::before{opacity:1}
+.mod-ico{
+  width:46px;height:46px;margin-bottom:20px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(245,158,11,.28);border-radius:4px;
+  transition:border-color .3s,box-shadow .3s;
+}
+.mod:hover .mod-ico{border-color:var(--am);box-shadow:0 0 18px rgba(245,158,11,.18)}
+.mod-ico svg{width:22px;height:22px;stroke:var(--am);fill:none;stroke-width:1.5}
+.mod h3{font-size:14px;font-weight:500;margin-bottom:10px}
+.mod p{font-size:12px;color:var(--mu);line-height:1.68;font-weight:300}
+.mod-num{
+  position:absolute;bottom:16px;right:20px;
+  font-family:'Bebas Neue',sans-serif;font-size:56px;
+  color:rgba(245,158,11,.05);line-height:1;
+  transition:color .35s;
+}
+.mod:hover .mod-num{color:rgba(245,158,11,.09)}
+.mod-bar{
+  position:absolute;bottom:0;left:0;
+  height:2px;width:0;background:var(--am);
+  transition:width .45s cubic-bezier(.4,0,.2,1);
+}
+.mod:hover .mod-bar{width:100%}
+
+/* FEATURE PANELS */
+.feats{background:var(--nv);padding:90px 0}
+.feats-hdr{padding:0 40px;margin-bottom:70px}
+.fp{
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:380px;overflow:hidden;
+  border-top:1px solid var(--br);
+}
+.fp.rev .fp-img{order:2}
+.fp.rev .fp-copy{order:1}
+.fp-img{
+  background-size:cover;background-position:center;
+  position:relative;overflow:hidden;
+  opacity:0;transition:opacity .9s,transform .9s;
+}
+.fp1 .fp-img{background-image:url('https://images.unsplash.com/photo-1553413077-190dd305871c?w=800&q=70');filter:brightness(.6) saturate(.7);transform:translateX(-50px)}
+.fp2 .fp-img{background-image:url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=70');filter:brightness(.65) saturate(.8) hue-rotate(190deg);transform:translateX(50px)}
+.fp3 .fp-img{background-image:url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=70');filter:brightness(.6) saturate(.9);transform:translateX(-50px)}
+.fp.vis .fp-img{opacity:1;transform:translateX(0)}
+.fp-iov{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(2,4,8,.75))}
+.fp-itag{
+  position:absolute;bottom:22px;left:22px;
+  font-family:'Bebas Neue',sans-serif;font-size:40px;
+  color:rgba(245,249,255,.1);letter-spacing:4px;
+}
+.fp-copy{
+  padding:60px 52px;display:flex;flex-direction:column;justify-content:center;
+  background:var(--st);
+  opacity:0;transform:translateY(36px);
+  transition:opacity .8s .2s,transform .8s .2s;
+}
+.fp.vis .fp-copy{opacity:1;transform:translateY(0)}
+.fp-copy h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(24px,3vw,38px);font-weight:700;
+  line-height:1.2;margin:14px 0 18px;
+}
+.fp-copy h2 em{color:var(--am);font-style:normal}
+.fp-copy p{font-size:13px;color:var(--mu);line-height:1.8;font-weight:300;max-width:400px}
+.fl{list-style:none;margin-top:24px;display:flex;flex-direction:column;gap:10px}
+.fl li{font-size:12px;color:var(--mu);display:flex;align-items:center;gap:10px}
+.fl li::before{content:'';width:18px;height:1px;background:var(--am);flex-shrink:0}
+
+/* GALLERY */
+.gallery{
+  background:var(--ni);padding:60px 0;
+  border-top:1px solid var(--br);border-bottom:1px solid var(--br);
+  overflow:hidden;
+}
+.gtrack{display:flex;gap:16px;width:max-content;animation:marquee 32s linear infinite}
+.gallery:hover .gtrack{animation-play-state:paused}
+@keyframes marquee{to{transform:translateX(-50%)}}
+.gi{
+  width:260px;height:165px;flex-shrink:0;
+  background-size:cover;background-position:center;
+  position:relative;overflow:hidden;border-radius:3px;
+  filter:saturate(.4) brightness(.58);
+  transition:filter .45s,transform .45s;
+}
+.gi:hover{filter:saturate(1) brightness(.88);transform:scale(1.04)}
+.gi-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(2,4,8,.8),transparent 60%)}
+.gi-lbl{
+  position:absolute;bottom:12px;left:14px;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(245,249,255,.55);
+}
+
+/* AI CHAT */
+.ai-sec{
+  background:var(--ni);padding:90px 40px;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+}
+.chat-win{
+  background:var(--st);
+  border:1px solid var(--br);border-radius:6px;overflow:hidden;
+  box-shadow:0 0 50px rgba(0,0,0,.4);
+  opacity:0;transform:scale(.94) translateY(24px);
+  transition:opacity .8s,transform .8s;
+}
+.chat-win.vis{opacity:1;transform:scale(1) translateY(0)}
+.chat-hdr{
+  background:var(--md);padding:14px 18px;
+  display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid var(--br);
+}
+.chat-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--am);box-shadow:0 0 7px var(--am);
+  animation:pdot 2s ease-in-out infinite;
+}
+@keyframes pdot{0%,100%{opacity:1}50%{opacity:.35}}
+.chat-ht{font-size:12px;font-weight:500}
+.chat-hs{font-size:10px;color:var(--mu);margin-left:auto;letter-spacing:1px}
+.chat-body{padding:20px 16px;display:flex;flex-direction:column;gap:14px;min-height:280px;max-height:320px;overflow-y:auto}
+.msg{display:flex;gap:8px;align-items:flex-end}
+.msg.usr{flex-direction:row-reverse}
+.av{
+  width:26px;height:26px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:500;
+}
+.bot .av{background:var(--am);color:#020408}
+.usr .av{background:var(--md);color:var(--wh);border:1px solid var(--br)}
+.bubble{
+  max-width:72%;padding:10px 14px;font-size:12px;line-height:1.6;
+}
+.bot .bubble{background:var(--md);border-radius:2px 10px 10px 10px}
+.usr .bubble{
+  background:rgba(245,158,11,.1);
+  border:1px solid rgba(245,158,11,.18);
+  border-radius:10px 2px 10px 10px;text-align:right;
+}
+.chat-inp{
+  padding:14px 16px;border-top:1px solid var(--br);
+  display:flex;gap:10px;align-items:center;
+}
+.chat-field{
+  flex:1;background:var(--ni);border:1px solid var(--br);
+  border-radius:18px;padding:9px 16px;font-size:12px;color:var(--wh);
+  outline:none;font-family:'DM Sans',sans-serif;
+}
+.chat-field::placeholder{color:rgba(245,249,255,.28)}
+.chat-send{
+  width:32px;height:32px;border-radius:50%;background:var(--am);
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .3s;
+}
+.chat-send:hover{background:var(--ab)}
+.chat-send svg{width:14px;height:14px;stroke:#020408;fill:none;stroke-width:2}
+
+/* CTA */
+.cta{
+  background:var(--st);padding:110px 40px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.cta::before{
+  content:'';position:absolute;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,158,11,.07),transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
+}
+.cta-t{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(44px,7vw,88px);letter-spacing:4px;
+  line-height:.95;margin-bottom:24px;
+}
+.cta-t span{
+  -webkit-text-stroke:1px var(--am);
+  color:transparent;display:block;
+}
+.cta-p{font-size:14px;color:var(--mu);max-width:440px;margin:0 auto 40px;line-height:1.75;font-weight:300}
+
+/* FOOTER */
+footer{
+  background:var(--ni);padding:50px 40px;
+  border-top:1px solid var(--br);
+  display:grid;grid-template-columns:2fr 1fr 1fr;gap:50px;
+}
+.ft-brand .logo{margin-bottom:14px;font-size:20px}
+.ft-brand p{font-size:12px;color:var(--mu);line-height:1.7;font-weight:300;max-width:230px}
+.ft-col h5{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--am);margin-bottom:16px;font-weight:500}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.ft-col ul li a{font-size:12px;color:var(--mu);text-decoration:none;transition:color .3s}
+.ft-col ul li a:hover{color:var(--am)}
+.ft-bot{
+  border-top:1px solid var(--br);padding:20px 40px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--ni);
+}
+.ft-bot p{font-size:11px;color:rgba(245,249,255,.25);letter-spacing:.8px}
+</style>
+
+<div id="wrap">
+  <canvas id="trail"></canvas>
+  <div id="cur-ring"></div>
+  <div id="cur-dot"></div>
+
+  <nav>
+    <div class="logo"><div class="logo-hex"></div>FactoryOS</div>
+    <ul class="nav-links">
+      <li><a href="#mods-sec">Modules</a></li>
+      <li><a href="#feats-sec">Features</a></li>
+      <li><a href="#ai-sec">AI Bot</a></li>
+    </ul>
+    <button class="nav-btn">Get Demo</button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero-sec">
+    <div class="merge-bg" id="merge-bg">
+      <div class="merge-l" id="ml"></div>
+      <div class="merge-r" id="mr"></div>
+      <div class="merge-ov"></div>
+      <div class="merge-line" id="mline"></div>
+    </div>
+    <div class="hero-grid"></div>
+    <div class="hero-c">
+      <p class="hero-eye">Unified Factory Intelligence Platform</p>
+      <h1 class="hero-h">Factory<span>OS</span></h1>
+      <p class="hero-p">From raw material to dispatch gate — one platform controls production, people, payroll, vendors, costs and your AI assistant.</p>
+      <div class="hero-btns">
+        <button class="btn-p">Start Free Trial</button>
+        <button class="btn-o">Watch Demo</button>
+      </div>
+    </div>
+    <div class="scroll-hint"><span>Scroll</span><div class="scroll-bar"></div></div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="stat-n"><span class="cnt" data-t="2400">0</span><span class="stat-s">+</span></div><div class="stat-l">Factories Onboarded</div></div>
+    <div class="stat"><div class="stat-n"><span class="cnt" data-t="98">0</span><span class="stat-s">%</span></div><div class="stat-l">Uptime SLA</div></div>
+    <div class="stat"><div class="stat-n"><span class="cnt" data-t="12">0</span><span class="stat-s">M+</span></div><div class="stat-l">Transactions Processed</div></div>
+    <div class="stat"><div class="stat-n"><span class="cnt" data-t="9">0</span><span class="stat-s"> Modules</span></div><div class="stat-l">Fully Integrated</div></div>
+  </div>
+
+  <!-- SHOWCASE -->
+  <div class="showcase">
+    <div class="sc-imgs">
+      <div class="sc-a"></div>
+      <div class="sc-b"></div>
+      <div class="sc-ov"></div>
+      <div class="sc-lbl">Hover to merge views</div>
+    </div>
+    <div class="sc-copy">
+      <span class="tag">How It Works</span>
+      <h2 class="sec-h" style="margin-bottom:0">Every Layer of<br><em>Your Factory</em></h2>
+      <div class="steps">
+        <div class="step"><div class="step-n">01</div><div class="step-t"><h4>Connect Your Floor</h4><p>Plug in machines, biometric devices and inventory sensors. Live data flows into your dashboard instantly.</p></div></div>
+        <div class="step"><div class="step-n">02</div><div class="step-t"><h4>Automate Operations</h4><p>Work orders, payroll, GRNs and purchase approvals run automatically with your configured rules.</p></div></div>
+        <div class="step"><div class="step-n">03</div><div class="step-t"><h4>Decide with Intelligence</h4><p>FactoryBot surfaces anomalies and insights before they become problems. Ask anything, get answers.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULES -->
+  <section class="sec mods" id="mods-sec">
+    <span class="tag">Platform Modules</span>
+    <h2 class="sec-h">Everything You Need.<br><em>Nothing You Don't.</em></h2>
+    <div class="mod-grid">
+      <div class="mod"><div class="mod-ico"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="1"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div><h3>Production Management</h3><p>Work orders, shift scheduling, live output tracking, QC gates, batch traceability and yield analysis.</p><div class="mod-bar"></div><div class="mod-num">01</div></div>
+      <div class="mod"><div class="mod-ico"><svg viewBox="0 0 24 24"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><h3>Dispatch & Logistics</h3><p>Challan generation, e-way bills, transporter assignment, gate-pass auth and POD upload.</p><div class="mod-bar"></div><div class="mod-num">02</div></div>
+      <div class="mod"><div class="mod-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><h3>Employee Management</h3><p>Biometric attendance, leave workflows, skill matrix, performance scoring from production records.</p><div class="mod-bar"></div><div class="mod-num">03</div></div>
+      <div class="mod"><div class="mod-ico"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><h3>Payroll & Salary</h3><p>Auto computation with PF, ESIC, TDS. Piece-rate workers. WhatsApp / email payslip delivery.</p><div class="mod-bar"></div><div class="mod-num">04</div></div>
+      <div class="mod"><div class="mod-ico"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div><h3>Vendor & Purchase</h3><p>PO workflow, 3-way invoice matching, vendor portal, payment scheduling and scorecard.</p><div class="mod-bar"></div><div class="mod-num">05</div></div>
+      <div class="mod"><div class="mod-ico"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><h3>MIS & Reports</h3><p>OEE, capacity utilization, financial MIS, custom report builder with role-based dashboards.</p><div class="mod-bar"></div><div class="mod-num">06</div></div>
+      <div class="mod"><div class="mod-ico"><svg viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></div><h3>Inventory & Stores</h3><p>Raw material, WIP and finished goods with reorder alerts, barcode labels and multi-warehouse.</p><div class="mod-bar"></div><div class="mod-num">07</div></div>
+      <div class="mod"><div class="mod-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M5.34 18.66l-1.41 1.41M21 12h-2M5 12H3M12 5V3M12 21v-2"/></svg></div><h3>Costing & Auth</h3><p>Standard vs actual cost per batch, CAPEX approvals, authorization matrix and profitability.</p><div class="mod-bar"></div><div class="mod-num">08</div></div>
+      <div class="mod"><div class="mod-ico"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div><h3>Service Tickets</h3><p>Machine breakdown tickets, preventive maintenance, SLA tracking and spare parts per ticket.</p><div class="mod-bar"></div><div class="mod-num">09</div></div>
+    </div>
+  </section>
+
+  <!-- FEATURE PANELS -->
+  <section class="feats" id="feats-sec">
+    <div class="feats-hdr">
+      <span class="tag">Deep Dive</span>
+      <h2 class="sec-h">Built for the<br><em>Ground Level</em></h2>
+    </div>
+    <div class="fp fp1" id="fp1">
+      <div class="fp-img"><div class="fp-iov"></div><div class="fp-itag">DISPATCH</div></div>
+      <div class="fp-copy"><span class="tag">Dispatch & Logistics</span><h2>From Finished Goods<br>to <em>Customer Door</em></h2><p>Every dispatch tracked end-to-end. Challans, e-way bills, transporter details and proof of delivery in one flow.</p><ul class="fl"><li>Auto e-way bill via GST API</li><li>Real-time transporter tracking</li><li>POD photo upload from driver's phone</li><li>Return merchandise authorization flow</li></ul></div>
+    </div>
+    <div class="fp fp2 rev" id="fp2">
+      <div class="fp-img"><div class="fp-iov"></div><div class="fp-itag">VENDOR</div></div>
+      <div class="fp-copy"><span class="tag">Vendor Management</span><h2>Pay Vendors <em>Smarter</em>,<br>Not Slower</h2><p>Three-way matching validates POs, goods receipts and invoices automatically before payment is released.</p><ul class="fl"><li>Multi-level PO approval by value bands</li><li>3-way match: PO ↔ GRN ↔ Invoice</li><li>Vendor rating on quality, delivery, price</li><li>Vendor portal for payment self-tracking</li></ul></div>
+    </div>
+    <div class="fp fp3" id="fp3">
+      <div class="fp-img"><div class="fp-iov"></div><div class="fp-itag">INSIGHTS</div></div>
+      <div class="fp-copy"><span class="tag">MIS & Intelligence</span><h2>Decision-Grade <em>Data</em><br>for Every Role</h2><p>From the worker checking leave balance to the owner reviewing margin by product line — every view built for its audience.</p><ul class="fl"><li>OEE: availability × performance × quality</li><li>Custom report builder with Excel export</li><li>Budget vs actual by cost center</li><li>Mobile-first for supervisors on floor</li></ul></div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <div class="gallery">
+    <div class="gtrack">
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Production Floor</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Assembly Line</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Quality Control</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Machinery</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1553413077-190dd305871c?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Dispatch Bay</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Warehouse</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Analytics</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1562408590-e32931084e23?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Inventory</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Production Floor</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Assembly Line</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Quality Control</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Machinery</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1553413077-190dd305871c?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Dispatch Bay</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Warehouse</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Analytics</div></div>
+      <div class="gi" style="background-image:url('https://images.unsplash.com/photo-1562408590-e32931084e23?w=500&q=65')"><div class="gi-ov"></div><div class="gi-lbl">Inventory</div></div>
+    </div>
+  </div>
+
+  <!-- AI CHAT -->
+  <section class="ai-sec" id="ai-sec">
+    <div>
+      <span class="tag">AI Assistant</span>
+      <h2 class="sec-h" style="margin-bottom:18px">Meet<br><em>FactoryBot</em></h2>
+      <p style="font-size:14px;color:var(--mu);line-height:1.8;font-weight:300;max-width:380px;margin-bottom:28px">Your factory's AI brain. Ask about production, raise machine tickets, check payroll — in English, Hindi or any regional language.</p>
+      <ul class="fl" style="max-width:360px">
+        <li>Natural language queries across all modules</li>
+        <li>Proactive anomaly alerts & reminders</li>
+        <li>Raise tickets & approvals via chat</li>
+        <li>Hindi · Tamil · Gujarati · English</li>
+      </ul>
+    </div>
+    <div class="chat-win" id="chat-win">
+      <div class="chat-hdr">
+        <div class="chat-dot"></div>
+        <div class="chat-ht">FactoryBot AI</div>
+        <div class="chat-hs">Powered by Claude</div>
+      </div>
+      <div class="chat-body" id="chat-body">
+        <div class="msg bot"><div class="av">FB</div><div><div class="bubble">Good morning! Today's target is <strong>2,400 units</strong>. Line 3 at 87% efficiency. How can I help?</div></div></div>
+        <div class="msg usr"><div class="av">RS</div><div><div class="bubble">Show pending vendor payments this week</div></div></div>
+        <div class="msg bot"><div class="av">FB</div><div><div class="bubble">Found <strong>7 pending invoices</strong> — ₹14.2L total. 3 are overdue 5+ days. Draft payment approvals?</div></div></div>
+        <div class="msg usr"><div class="av">RS</div><div><div class="bubble">Machine 7 on Line 2 making noise</div></div></div>
+        <div class="msg bot"><div class="av">FB</div><div><div class="bubble">Raised <strong>Priority HIGH</strong> ticket for Machine 7, Line 2. Assigned to Rajan — ETA 45 min. Ticket #MT-2847 created.</div></div></div>
+      </div>
+      <div class="chat-inp">
+        <input class="chat-field" type="text" id="cinput" placeholder="Ask FactoryBot anything…">
+        <button class="chat-send" onclick="sendMsg()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <p style="font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--am);margin-bottom:18px;font-weight:500">Get Started Today</p>
+    <h2 class="cta-t">Run Your Factory<span>Like a Machine</span></h2>
+    <p class="cta-p">Join 2,400+ factories across India already using FactoryOS to cut costs, raise output and eliminate manual errors.</p>
+    <div style="display:flex;gap:14px;justify-content:center">
+      <button class="btn-p" style="font-size:13px;padding:14px 40px">Start Free 30-Day Trial</button>
+      <button class="btn-o" style="font-size:13px;padding:14px 40px">Talk to Sales</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ft-brand">
+      <div class="logo"><div class="logo-hex" style="animation:none"></div>FactoryOS</div>
+      <p>The only platform your factory will ever need. From shop floor to boardroom — unified, intelligent, built for India.</p>
+    </div>
+    <div class="ft-col">
+      <h5>Platform</h5>
+      <ul><li><a href="#">Production</a></li><li><a href="#">Payroll</a></li><li><a href="#">Dispatch</a></li><li><a href="#">Vendors</a></li><li><a href="#">FactoryBot AI</a></li></ul>
+    </div>
+    <div class="ft-col">
+      <h5>Company</h5>
+      <ul><li><a href="#">About Us</a></li><li><a href="#">Careers</a></li><li><a href="#">Blog</a></li><li><a href="#">Contact</a></li></ul>
+    </div>
+  </footer>
+  <div class="ft-bot">
+    <p>© 2025 FactoryOS Technologies Pvt. Ltd. — Made in India</p>
+    <p>GST · PF · ESIC · TDS Compliant</p>
+  </div>
+</div>
+
+<script>
+const wrap=document.getElementById('wrap');
+const ring=document.getElementById('cur-ring');
+const dot=document.getElementById('cur-dot');
+const canvas=document.getElementById('trail');
+const ctx=canvas.getContext('2d');
+
+function resizeCanvas(){canvas.width=wrap.offsetWidth;canvas.height=wrap.scrollHeight}
+resizeCanvas();
+
+let mx=-200,my=-200,rx=-200,ry=-200;
+const particles=[];
+
+wrap.addEventListener('mousemove',e=>{
+  const r=wrap.getBoundingClientRect();
+  mx=e.clientX-r.left;my=e.clientY-r.top+wrap.scrollTop;
+  dot.style.left=mx+'px';dot.style.top=my+'px';
+  particles.push({x:mx,y:my,r:Math.random()*5+2,a:.7,dx:(Math.random()-.5)*1.5,dy:(Math.random()-.5)*1.5-.4});
+  if(particles.length>80)particles.shift();
+});
+
+let raf;
+function animLoop(){
+  rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(245,158,11,${p.a})`;ctx.fill();
+    p.x+=p.dx;p.y+=p.dy;p.r*=.93;p.a*=.92;
+    if(p.a<.02||p.r<.3)particles.splice(i,1);
+  }
+  requestAnimationFrame(animLoop);
+}
+animLoop();
+
+wrap.addEventListener('mouseenter',()=>{ring.style.opacity='1';dot.style.opacity='1'});
+wrap.addEventListener('mouseleave',()=>{ring.style.opacity='0';dot.style.opacity='0'});
+ring.style.opacity='0';dot.style.opacity='0';
+
+document.querySelectorAll('button,a').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='72px';ring.style.height='72px';ring.style.borderColor='#FCD34D'});
+  el.addEventListener('mouseleave',()=>{ring.style.width='40px';ring.style.height='40px';ring.style.borderColor='#F59E0B'});
+});
+
+// HERO MERGE
+const mb=document.getElementById('merge-bg');
+const ml=document.getElementById('ml');
+const mr=document.getElementById('mr');
+const mline=document.getElementById('mline');
+let autoP=50,autoD=1,manual=false;
+function setMerge(p){
+  ml.style.clipPath=`polygon(0 0,${p}% 0,${p}% 100%,0 100%)`;
+  mr.style.clipPath=`polygon(${p}% 0,100% 0,100% 100%,${p}% 100%)`;
+  mline.style.left=p+'%';
+}
+function autoSweep(){
+  if(manual)return;
+  autoP+=autoD*.25;if(autoP>72)autoD=-1;if(autoP<28)autoD=1;
+  setMerge(autoP);requestAnimationFrame(autoSweep);
+}
+autoSweep();
+mb.addEventListener('mousemove',e=>{
+  manual=true;
+  const r=mb.getBoundingClientRect();
+  setMerge(Math.max(5,Math.min(95,((e.clientX-r.left)/r.width)*100)));
+});
+mb.addEventListener('mouseleave',()=>{manual=false;autoSweep()});
+
+// COUNTERS
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target,t=+el.dataset.t,dur=2000,step=t/(dur/16);
+    let c=0;
+    const tmr=setInterval(()=>{
+      c=Math.min(c+step,t);
+      el.textContent=Math.floor(c).toLocaleString('en-IN');
+      if(c>=t)clearInterval(tmr);
+    },16);
+    obs.unobserve(el);
+  });
+},{threshold:.5});
+document.querySelectorAll('.cnt').forEach(c=>obs.observe(c));
+
+// SCROLL REVEAL
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting)e.target.classList.add('vis')});
+},{threshold:.12});
+document.querySelectorAll('.step,.mod,.fp,#chat-win').forEach((el,i)=>{
+  el.style.transitionDelay=(i%3)*.1+'s';
+  revObs.observe(el);
+});
+
+// CHAT
+const replies=[
+  "Today's output: 1,847 units across all lines. Line 2 leads with 640 units.",
+  "Current raw material inventory at 68% capacity. Reorder alert on SKU-442.",
+  "Payroll: ₹34.8L processed this month. 3 employees have pending attendance fixes.",
+  "6 open service tickets: 2 Critical, 3 High, 1 Medium. Machine 4 resolved 10:45 AM.",
+  "4 POs awaiting approval — ₹8.2L total. Oldest pending for 3 days.",
+];
+let ri=0;
+function sendMsg(){
+  const inp=document.getElementById('cinput');
+  const body=document.getElementById('chat-body');
+  const txt=inp.value.trim();if(!txt)return;
+  const u=document.createElement('div');u.className='msg usr';
+  u.innerHTML=`<div class="av">YOU</div><div><div class="bubble">${txt}</div></div>`;
+  body.appendChild(u);inp.value='';body.scrollTop=body.scrollHeight;
+  setTimeout(()=>{
+    const b=document.createElement('div');b.className='msg bot';
+    b.innerHTML=`<div class="av">FB</div><div><div class="bubble">${replies[ri%replies.length]}</div></div>`;
+    body.appendChild(b);body.scrollTop=body.scrollHeight;ri++;
+    resizeCanvas();
+  },800);
+}
+document.getElementById('cinput').addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg()});
+
+// RESIZE
+new ResizeObserver(resizeCanvas).observe(wrap);
+</script>
